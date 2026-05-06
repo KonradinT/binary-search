@@ -1,44 +1,26 @@
-# 🔍 C++ Binary Search Implementation 
+# Binary Search Implementation (Exercism)
 
-## 📖 Overview 
+This project implements a Binary Search algorithm as part of an **Exercism** exercise. This version represents the **second iteration** of the solution, incorporating feedback from the Exercism mentoring process to move from functional code to a more refined implementation.
 
-This project implements a **Binary Search** algorithm as part of an **Exercism** exercise.
-The goal was to achieve logarithmic time complexity. 
+## Refactor Highlights (Iteration 2)
+The mentoring process focused on replacing "special-case" branching with unified logic.
 
-## 🛠️ Build and Requirements
+* **Simplified Search Space:** Adopted `len = mid` when the target is smaller than the middle element. This treats the index as the new element count, removing the need for manual decrements or `mid == 0` special cases.
+* **Unified Logic:** Eliminated the `if (len == 1 && *ptr == number)` check. Since `len / 2` equals `0` when one element remains, the standard loop logic naturally evaluates the final candidate.
+* **Self-Documenting Code:** Removed procedural comments in favor of expressive naming (e.g., `value_at_mid`), letting the logic explain itself.
 
-This project uses **CMake** and requires a C++17 compliant compiler (tested with G++ 16.1.1).
+## Technical Decisions & Theory 
 
+### Memory & Performance
+* **Pointer Arithmetic:** Calculated offsets directly to maintain $O(1)$ space complexity.
+* **Complexity:** $O(\log n)$ time complexity by halving the search space in each iteration.
+
+### *Effective C++* (Scott Meyers) Integration
+* **Item 20 (Pass-by-Reference):** The `std::vector` is passed by `const reference` to avoid $O(n)$ copy overhead. The `int` target is passed by `value` to avoid the overhead of pointer indirection for a small primitive type.
+* **Item 3 (Const Correctness):** Local variables and pointers are marked `const` to prevent accidental state changes and document the read-only intent of the search.
+
+## Build and Test
 ```bash
 mkdir build && cd build
 cmake ..
 make
-```
-
-## 🎯 Design Philosophy 
-
-Implemented using pointer arithmetic with a focus on memory efficiency.
-
-### _Effective C++_ Principles (Scott Meyers)
-
-I applied the following core guidelines from Scott Meyers' _Effective C++_ to optimize efficiency and maintainability. 
- 
-#### Item 20: Prefer pass-by-reference-to-const to pass-by-value
-
-* **Vector parameter** (`const std::vector<int>& data`): 
-    * **Efficiency**: Passed-by-reference to achieve $O(1)$ during the function call.
-Passing by value would mean a deep copy, resulting in $O(n)$ time complexity and doubling memory usage.
-    * **Safety**: `const` to provide a read-only contract, ensuring the original data remains untouched.
-
-* **Target parameter** (`int number`): 
-    * **Performance**: Intentionally passed-by-value. Since an `int` (typically 4 bytes) is smaller than a pointer (8 bytes on 64-bit systems),
-passing by value avoids the overhead of indirection and is more memory efficient. 
-
-#### Item 3: Use const whenever possible
-
-* internal pointers and local variables (like `value_at_mid`) are `const` to document intent and prevent accidental logic errors.
-
-## ⚙️ Complexity Analysis
-
-* **Time Complexity**: $O(\log n)$
-* **Space Complexity**: $O(1)$. The search operates in-place, requiring no additional allocations.
